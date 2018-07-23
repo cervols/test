@@ -1,8 +1,8 @@
 def get_user_input
   input = ""
 
-  while input == "" do
-    input = STDIN.gets.chomp
+  while input.empty? do
+    input = gets.chomp
   end
 
   while input.to_i == 0
@@ -10,8 +10,7 @@ def get_user_input
     input = get_user_input
   end
 
-  return input.to_f
-
+  input.to_f
 end
 
 puts "Welcome in the \"Area of triangle\" program!"

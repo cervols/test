@@ -1,8 +1,8 @@
 def get_user_input
   input = ""
 
-  while input == "" do
-    input = STDIN.gets.chomp
+  while input.empty? do
+    input = gets.chomp
   end
 
   #did user enter a number? is it a positive number?
@@ -11,8 +11,7 @@ def get_user_input
     input = get_user_input
   end
 
-  return input.to_f
-
+  input.to_f
 end
 
 sides = []  #array with triangle sides
@@ -26,19 +25,20 @@ sides << get_user_input
 puts "and the third one:"
 sides << get_user_input
 
-case sides.uniq.length
-when 1
+if sides.uniq.length == 1
   puts "This triangle is isosceles and equilateral, but not right."
   abort
-when 2
-  puts "This triangle is isosceles"
 end
 
 max_side = sides.sort!.pop
 
-sum_of_squares_sides = sides.sum { |i| i * i}
+sum_of_squares_cathetus = sides.sum { |cathetus| cathetus**2 }
 
-if max_side**2 == sum_of_squares_sides**2
+right_triangle = max_side**2 == sum_of_squares_cathetus
+
+if right_triangle && sides.uniq.length == 1
+  puts "This is a right isosceles triangle with a hypotenuse = #{max_side}"
+elsif right_triangle
   puts "This is a right triangle with a hypotenuse = #{max_side}"
 else
   puts "This is not a right triangle"

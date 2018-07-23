@@ -1,12 +1,11 @@
 def get_user_input
   input = ""
 
-  while input == "" do
-    input = STDIN.gets.chomp
+  while input.empty? do
+    input = gets.chomp
   end
 
-  return input
-
+  input
 end
 
 puts "Welcome in \"Ideal weight\" program!"
