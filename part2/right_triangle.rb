@@ -30,6 +30,7 @@ if sides.uniq.length == 1
   abort
 end
 
+#extract max side (hypotenuse). 2 other sides (cathetus) remain in array
 max_side = sides.sort!.pop
 
 sum_of_squares_cathetus = sides.sum { |cathetus| cathetus**2 }
