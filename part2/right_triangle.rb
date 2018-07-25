@@ -37,7 +37,8 @@ sum_of_squares_cathetus = sides.sum { |cathetus| cathetus**2 }
 
 right_triangle = max_side**2 == sum_of_squares_cathetus
 
-if right_triangle && sides.uniq.length == 1
+#check if triangle is right and its cathetus are equal
+if right_triangle && sides.first == sides.last
   puts "This is a right isosceles triangle with a hypotenuse = #{max_side}"
 elsif right_triangle
   puts "This is a right triangle with a hypotenuse = #{max_side}"
