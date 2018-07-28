@@ -2,8 +2,7 @@ puts "Welcome in the \"Shopping cart\" program!\n" +
       "(enter \"stop\" as product name if you want to exit)"
 puts "#{'-' * 25}"
 
-cart = Hash.new
-grand_total = 0
+cart = {}
 
 loop do
   puts "Enter product:"
@@ -12,21 +11,21 @@ loop do
 
   puts "Unit price ($):"
   price = gets.chomp.to_f
-  
-  puts "Quantity:"
-  quantity = gets.chomp.to_f
 
-  cart[product.to_sym] = {price => quantity}
+  puts "Quantity:"
+  amount = gets.chomp.to_f
+
+  cart[product.to_sym] = { price: price, amount: amount }
 end
 
 puts cart
 
-cart.each do |product, sub_hash|
-  sub_hash.each do |price, quantity|
-    total = price * quantity
+grand_total = 0
+
+cart.each do |product, price_amount|
+    total = price_amount[:price] * price_amount[:amount]
     grand_total += total
     puts "#{product}: #{total}$"
-  end
 end
 
 puts "Grand Total: #{grand_total}$"
