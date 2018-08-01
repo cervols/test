@@ -25,9 +25,6 @@ else
   puts "#{year} isn't a leap year"
 end
 
-date_number = day
-
-#add the number of days in previous months
-(1...month).each { |month_number| date_number += days_in_months[month_number-1] }
+date_number = days_in_months.first(month-1).sum(day)
 
 puts "#{day}/#{month}/#{year} is the #{date_number} day in the year"

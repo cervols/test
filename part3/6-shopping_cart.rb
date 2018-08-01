@@ -23,9 +23,9 @@ puts cart
 grand_total = 0
 
 cart.each do |product, price_amount|
-    total = price_amount[:price] * price_amount[:amount]
-    grand_total += total
-    puts "#{product}: #{total}$"
+  total = price_amount[:price] * price_amount[:amount]
+  grand_total += total
+  puts "#{product}: #{total}$"
 end
 
 puts "Grand Total: #{grand_total}$"
