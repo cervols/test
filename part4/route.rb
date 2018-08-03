@@ -19,7 +19,7 @@ class Route
     if @station_list.include?(station)
       @station_list.delete(station)
     else
-      puts "Error! There is no station #{station} in the route list"
+      puts "Error! There is no station #{station.name} in the route list"
     end
   end
 

@@ -11,13 +11,24 @@ class Station
       puts "Error! This train is in the #{@name} already"
     else
       @trains << train
-      train.station = self.name
+      train.station = self
+    end
+  end
+
+  def delete_train(train)
+    if !@trains.include?(train)
+      puts "Error! This train is not in the #{@name} station"
+    else
+      @trains.delete(train)
     end
   end
 
   def send_train(train)
-    train.station = train.go_to_next_station
-    @trains.delete(train)
+    if !@trains.include?(train)
+      puts "Error! This train is not in the #{@name} station"
+    else
+      train.go_to_next_station
+    end
   end
 
   def show_trains
@@ -26,15 +37,8 @@ class Station
   end
 
   def show_type_trains
-    pass_trains = []
-    freight_trains = []
-    @trains.each do |train|
-      if train.type == 'passenger'
-        pass_trains << train
-      elsif train.type == 'freight'
-        freight_trains << train
-      end
-    end
+    pass_trains, freight_trains = @trains.partition { |train| train.type == 'passenger'}
+
     puts "Number of passenger trains: #{pass_trains.length}"
     pass_trains.each { |train| puts "#{train.number}" }
 
