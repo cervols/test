@@ -5,6 +5,14 @@ class Route
     @stations = [start_station, end_station]
   end
 
+  def first
+    @stations.first
+  end
+
+  def last
+    @stations.last
+  end
+
   def add_station(station)
     unless @stations.include?(station)
       @stations.insert(-2, station)
