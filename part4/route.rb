@@ -1,36 +1,29 @@
 class Route
-  attr_reader :station_list, :start_station, :end_station
+  attr_reader :stations
 
   def initialize(start_station, end_station)
-    @start_station = start_station
-    @end_station = end_station
-    @station_list = []
+    @stations = [start_station, end_station]
   end
 
   def add_station(station)
-    if !@station_list.include?(station)
-      @station_list << station
+    unless @stations.include?(station)
+      @stations.insert(-2, station)
     else
-      puts "Station #{station} is in the route list already"
+      puts "Station #{station.name} is in the route list already"
     end
   end
 
   def delete_station(station)
-    if @station_list.include?(station)
-      @station_list.delete(station)
+    if station == @stations.first || station == @stations.last
+      puts "Error! You are trying to delete the start or the end station"
+    elsif @stations.include?(station)
+      @stations.delete(station)
     else
       puts "Error! There is no station #{station.name} in the route list"
     end
   end
 
-  def get_whole_route
-    whole_route = [start_station]
-    station_list.each { |station| whole_route << station } 
-    whole_route << end_station
-  end
-
   def show_stations
-    puts "Stations:"
-    get_whole_route.each { |station| puts station.name }
+    @stations.each { |station| puts station.name }
   end
 end

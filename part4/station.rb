@@ -1,5 +1,5 @@
 class Station
-  attr_reader :name
+  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
@@ -8,41 +8,21 @@ class Station
 
   def add_train(train)
     if @trains.include?(train)
-      puts "Error! This train is in the #{@name} already"
+      puts "This train is at the #{@name} already"
     else
       @trains << train
-      train.station = self
     end
   end
 
-  def delete_train(train)
-    if !@trains.include?(train)
-      puts "Error! This train is not in the #{@name} station"
-    else
-      @trains.delete(train)
-    end
+  def type_trains(type)
+    @trains.select { |train| train.type == type }
   end
 
   def send_train(train)
     if !@trains.include?(train)
-      puts "Error! This train is not in the #{@name} station"
+      puts "Error! This train is not at the #{@name} station"
     else
-      train.go_to_next_station
+      @trains.delete(train)
     end
-  end
-
-  def show_trains
-    @trains.each { |train| puts "#{train.number} - #{train.type} - " +
-      "#{train.wagons_number} wagons" }
-  end
-
-  def show_type_trains
-    pass_trains, freight_trains = @trains.partition { |train| train.type == 'passenger'}
-
-    puts "Number of passenger trains: #{pass_trains.length}"
-    pass_trains.each { |train| puts "#{train.number}" }
-
-    puts "Number of freight trains: #{freight_trains.length}"
-    freight_trains.each { |train| puts "#{train.number}" }
-  end
+  end  
 end
