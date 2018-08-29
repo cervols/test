@@ -6,23 +6,22 @@ class Station
     @trains = []
   end
 
-  def add_train(train)
-    if @trains.include?(train)
-      puts "This train is at the #{@name} already"
-    else
-      @trains << train
-    end
-  end
-
   def type_trains(type)
     @trains.select { |train| train.type == type }
   end
 
+  def add_train(train)
+    @trains << train if correct_station?(train)
+  end
+
   def send_train(train)
-    if !@trains.include?(train)
-      puts "Error! This train is not at the #{@name} station"
-    else
-      @trains.delete(train)
-    end
-  end  
+    @trains.delete(train) if correct_station?(train)
+  end 
+
+  private
+
+  def correct_station?(train)
+    train.route.stations[train.station_index] == self
+  end
+
 end

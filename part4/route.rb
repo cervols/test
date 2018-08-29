@@ -26,6 +26,7 @@ class Route
       puts "Error! You are trying to delete the start or the end station"
     elsif @stations.include?(station)
       @stations.delete(station)
+      puts "Station #{station.name} was removed from the route"
     else
       puts "Error! There is no station #{station.name} in the route list"
     end

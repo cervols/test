@@ -1,10 +1,9 @@
 class Train
-  attr_reader :number, :type, :wagons, :speed, :station_index
+  attr_reader :number, :speed, :route, :station_index, :type
 
-  def initialize(number, type = "passenger", wagons)
+  def initialize(number)
     @number = number
-    @type = type
-    @wagons = wagons
+    @wagons = []
     @speed = 0
   end
 
@@ -16,28 +15,29 @@ class Train
     @speed = @speed > speed ? @speed - speed : 0
   end
 
-  def add_wagon
-    return puts "Error! Cannot add wagon because the train is moving" if @speed != 0
-    @wagons += 1
+  def add_wagon(wagon)
+    return puts "Error! Cannot add wagon because the train is moving" unless @speed.zero?
+    @wagons << wagon
   end
 
   def delete_wagon
-    return puts "Error! Cannot delete wagon because the train is moving" if @speed != 0
-    @wagons -= 1 if @wagons > 0
+    return puts "Error! Cannot delete wagon because the train is moving" unless @speed.zero?
+    @wagons.delete_at(-1) if @wagons.size > 0
+  end
+
+  def wagons_number
+    @wagons.empty? ? 0 : @wagons.size
   end
 
   def add_route(route)
+    leave_station if have_route?
     @route = route
     @station_index = 0
-    @route.stations.first.add_train(self)
-  end
-
-  def station(station_index)
-    @route.stations[station_index] if @route
+    arrive_at_station
   end
 
   def current_station
-    if @route
+    if have_route?
       station(@station_index)
     else
       puts "There is no route for this train"
@@ -45,30 +45,58 @@ class Train
   end
 
   def next_station
-    return puts "There is no route for this train" unless @route
-    return puts "The train is in the end station already" if current_station == @route.last
+    return puts "There is no route for this train" unless have_route?
+    return puts "The train is in the last station already" if last_station?
     station(@station_index + 1)
   end
 
   def previous_station
-    return puts "There is no route for this train" unless @route
-    return puts "The train is in the start station already" if current_station == @route.first
+    return puts "There is no route for this train" unless have_route?
+    return puts "The train is in the first station already" if first_station?
     station(@station_index - 1)
   end
 
   def go_to_next_station
     if next_station
-      current_station.send_train(self)      
-      next_station.add_train(self)
+      leave_station
       @station_index += 1
+      arrive_at_station
     end
   end
 
   def go_to_previous_station
     if previous_station
-      current_station.send_train(self)      
-      previous_station.add_train(self)
-      @station_index -= 1
+      leave_station
+      @station_index -= 1   
+      arrive_at_station
     end
+  end
+
+  protected
+
+  attr_reader :wagons
+
+  def have_route?
+    !@route.nil?
+  end
+
+  def station(station_index)
+    @route.stations[station_index] if have_route?
+  end
+
+  def leave_station
+    current_station.send_train(self)
+  end
+
+  def arrive_at_station
+    current_station.add_train(self)
+  end
+  
+  def last_station?
+    current_station == @route.last
+  end
+
+  def first_station?
+    current_station == @route.first
   end
 end
