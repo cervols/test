@@ -21,13 +21,13 @@ class Train
     @wagons << wagon
   end
 
-  def delete_wagon
+  def delete_wagon(wagon)
     return puts "Error! Cannot delete wagon because the train is moving" unless @speed.zero?
-    @wagons.delete_at(-1) if @wagons.size > 0
+    @wagons.delete(wagon)
   end
 
   def wagons_number
-    @wagons.empty? ? 0 : @wagons.size
+    @wagons.size
   end
 
   def add_route(route)
