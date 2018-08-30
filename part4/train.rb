@@ -17,13 +17,11 @@ class Train
   end
 
   def add_wagon(wagon)
-    return puts "Error! Cannot add wagon because the train is moving" unless @speed.zero?
-    @wagons << wagon
+    @wagons << wagon if @speed.zero?
   end
 
   def delete_wagon(wagon)
-    return puts "Error! Cannot delete wagon because the train is moving" unless @speed.zero?
-    @wagons.delete(wagon)
+    @wagons.delete(wagon) if @speed.zero?
   end
 
   def wagons_number
@@ -38,23 +36,15 @@ class Train
   end
 
   def current_station
-    if have_route?
-      station(@station_index)
-    else
-      puts "There is no route for this train"
-    end
+    station(@station_index) if have_route?
   end
 
   def next_station
-    return puts "There is no route for this train" unless have_route?
-    return puts "The train is in the last station already" if last_station?
-    station(@station_index + 1)
+    station(@station_index + 1) if have_route? && !last_station?
   end
 
   def previous_station
-    return puts "There is no route for this train" unless have_route?
-    return puts "The train is in the first station already" if first_station?
-    station(@station_index - 1)
+    station(@station_index - 1) if have_route? && !first_station?
   end
 
   def go_to_next_station
