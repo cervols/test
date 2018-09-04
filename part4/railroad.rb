@@ -63,86 +63,73 @@ class Railroad
   end
 
   def create_menu
-    @interface.show_create_menu
-    choice = user_input
-    case choice
-    when '0'
-      main_menu
-    when '1'
-      create_station
-      create_menu
-    when '2'
-      create_train
-      create_menu
-    when '3'
-      create_wagon
-      create_menu
-    when '4'
-      create_route
-      create_menu
-    else
-      @interface.dont_understand(choice)
-      create_menu
+    loop do
+      @interface.show_create_menu
+      choice = user_input
+      case choice
+      when '0'
+        main_menu
+      when '1'
+        create_station
+      when '2'
+        create_train
+      when '3'
+        create_wagon
+      when '4'
+        create_route
+      else
+        @interface.dont_understand(choice)
+      end
     end
   end
 
   def work_menu
-    @interface.show_work_menu
-    choice = user_input
-    case choice
-    when '0'
-      main_menu
-    when '1'
-      add_station_to_route
-      work_menu
-    when '2'
-      remove_station_from_route
-      work_menu
-    when '3'
-      add_route_to_train
-      work_menu
-    when '4'
-      change_wagons_number('add to train')
-      work_menu
-    when '5'
-      change_wagons_number('remove from train')
-      work_menu
-    when '6'
-      send_train('forward')
-      work_menu
-    when '7'
-      send_train('back')
-      work_menu
-    else
-      @interface.dont_understand(choice)
-      work_menu
+    loop do
+      @interface.show_work_menu
+      choice = user_input
+      case choice
+      when '0'
+        main_menu
+      when '1'
+        add_station_to_route
+      when '2'
+        remove_station_from_route
+      when '3'
+        add_route_to_train
+      when '4'
+        change_wagons_number('add to train')
+      when '5'
+        change_wagons_number('remove from train')
+      when '6'
+        send_train('forward')
+      when '7'
+        send_train('back')
+      else
+        @interface.dont_understand(choice)
+      end
     end
   end
 
   def info_menu
-    @interface.show_info_menu
-    choice = user_input
-    case choice
-    when '0'
-      main_menu
-    when '1'
-      stations_info
-      info_menu
-    when '2'
-      trains_info
-      info_menu
-    when '3'
-      trains_on_station_info
-      info_menu
-    when '4'
-      wagons_info
-      info_menu
-    when '5'
-      routes_info
-      info_menu
-    else
-      @interface.dont_understand(choice)
-      info_menu
+    loop do
+      @interface.show_info_menu
+      choice = user_input
+      case choice
+      when '0'
+        main_menu
+      when '1'
+        stations_info
+      when '2'
+        trains_info
+      when '3'
+        trains_on_station_info
+      when '4'
+        wagons_info
+      when '5'
+        routes_info
+      else
+        @interface.dont_understand(choice)
+      end
     end
   end
 
