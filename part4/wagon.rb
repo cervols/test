@@ -5,4 +5,8 @@ class Wagon
     @number = number
     @type = type
   end
+
+  def info
+    puts "#{@number} - #{@type}"
+  end
 end

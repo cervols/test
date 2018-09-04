@@ -22,7 +22,8 @@ class Route
     @stations.delete(station)
   end
 
-  def show_stations
-    @stations.each { |station| puts station.name }
+  def info
+    @stations.each { |station| print "#{station.name} " }
+    puts
   end
 end

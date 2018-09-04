@@ -1,5 +1,5 @@
 class Train
-  attr_reader :number, :speed, :route, :station_index, :type
+  attr_reader :number, :type, :wagons, :speed, :route, :station_index
 
   def initialize(number, type = 'train')
     @number = number
@@ -17,7 +17,7 @@ class Train
   end
 
   def add_wagon(wagon)
-    @wagons << wagon if @speed.zero?
+    @wagons << wagon if wagon.type == @type && @speed.zero?
   end
 
   def delete_wagon(wagon)
@@ -63,9 +63,11 @@ class Train
     end
   end
 
-  protected
+  def info
+    puts "#{@number} - #{@type}, number of wagons = #{self.wagons_number}"
+  end
 
-  attr_reader :wagons
+  protected
 
   def have_route?
     !@route.nil?
