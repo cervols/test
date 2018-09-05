@@ -5,33 +5,20 @@ class Route
     @stations = [start_station, end_station]
   end
 
-  def first
+  def first_station
     @stations.first
   end
 
-  def last
+  def last_station
     @stations.last
   end
 
   def add_station(station)
-    unless @stations.include?(station)
-      @stations.insert(-2, station)
-    else
-      puts "Station #{station.name} is in the route list already"
-    end
+    @stations.insert(-2, station) unless @stations.include?(station)
   end
 
   def delete_station(station)
-    if station == @stations.first || station == @stations.last
-      puts "Error! You are trying to delete the start or the end station"
-    elsif @stations.include?(station)
-      @stations.delete(station)
-    else
-      puts "Error! There is no station #{station.name} in the route list"
-    end
-  end
-
-  def show_stations
-    @stations.each { |station| puts station.name }
+    return if [first_station, last_station].include?(station)
+    @stations.delete(station)
   end
 end
