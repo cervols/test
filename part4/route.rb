@@ -21,9 +21,4 @@ class Route
     return 'Endpoints error' if station == @stations.first || station == @stations.last
     @stations.delete(station)
   end
-
-  def info
-    @stations.each { |station| print "#{station.name} " }
-    puts
-  end
 end

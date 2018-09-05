@@ -14,6 +14,11 @@ class Interface
     gets.chomp
   end
 
+  def show_collection_info(collection)
+    collection.each { |object| puts object.info }
+    pause
+  end
+
   def show_main_menu
     puts 'What do you want to do? Please, enter your choice and press Enter:'
     puts '1 - create station, train, wagon or route'

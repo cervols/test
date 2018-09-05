@@ -1,5 +1,9 @@
 class CargoTrain < Train
   def initialize(number)
-    super(number, type = 'cargo')
+    super(number, 'cargo')
+  end
+
+  def add_wagon(wagon)
+    super if wagon.type == @type
   end
 end

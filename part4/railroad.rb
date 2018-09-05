@@ -307,8 +307,7 @@ class Railroad
     if @stations.empty?
       @interface.error_no_objects('stations')
     else
-      @stations.each { |station| station.info }
-      @interface.pause
+      @interface.show_collection_info(@stations)
     end
   end
 
@@ -316,8 +315,7 @@ class Railroad
     if @trains.empty?
       @interface.error_no_objects('trains')
     else
-      @trains.each { |train| train.info }
-      @interface.pause
+      @interface.show_collection_info(@trains)
     end
   end
 
@@ -339,8 +337,7 @@ class Railroad
     if @wagons.empty?
       @interface.error_no_objects('wagons')
     else
-      @wagons.each { |wagon| wagon.info }
-      @interface.pause
+      @interface.show_collection_info(@wagons)
     end
   end
 
@@ -348,8 +345,7 @@ class Railroad
     if @routes.empty?
       @interface.error_no_objects('routes')
     else
-      routes.each { |route| route.info }
-      @interface.pause
+      @routes.each { |route| @interface.show_collection_info(route.stations) }
     end
   end
 end

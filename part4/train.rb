@@ -17,7 +17,7 @@ class Train
   end
 
   def add_wagon(wagon)
-    @wagons << wagon if wagon.type == @type && @speed.zero?
+    @wagons << wagon if @speed.zero?
   end
 
   def delete_wagon(wagon)
@@ -64,7 +64,7 @@ class Train
   end
 
   def info
-    puts "#{@number} - #{@type}, number of wagons = #{self.wagons_number}"
+    "#{@number} - #{@type}, number of wagons = #{self.wagons_number}"
   end
 
   protected

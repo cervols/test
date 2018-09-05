@@ -19,6 +19,6 @@ class Station
   end
 
   def info
-    puts "#{@name}, trains on station - #{@trains.size}"
+    "#{@name}, trains on station - #{@trains.size}"
   end
 end

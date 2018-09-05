@@ -7,6 +7,6 @@ class Wagon
   end
 
   def info
-    puts "#{@number} - #{@type}"
+    "#{@number} - #{@type}"
   end
 end
