@@ -31,8 +31,10 @@ class Railroad
     @interface.ask_enter_station(' end')
     end_station_name = user_input
 
-    @routes.find { |route| route.first.name.downcase == start_station_name.downcase &&
-      route.last.name.downcase == end_station_name.downcase }
+    @routes.find do |route|
+      route.first_station.name.downcase == start_station_name.downcase &&
+        route.last_station.name.downcase == end_station_name.downcase
+    end
   end
 
   def find_train(train_number)
@@ -328,8 +330,7 @@ class Railroad
     elsif station.trains.empty?
       @interface.error_no_trains_on_station(station_name)
     else
-      station.trains.each { |train| train.info }
-      @interface.pause
+      @interface.show_collection_info(station.trains)
     end
   end
 

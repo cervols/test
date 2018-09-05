@@ -1,7 +1,7 @@
 class Train
-  attr_reader :number, :type, :wagons, :speed, :route, :station_index
+  attr_reader :number, :type, :wagons, :speed, :route
 
-  def initialize(number, type = 'train')
+  def initialize(number, type)
     @number = number
     @type = type
     @wagons = []
@@ -69,6 +69,8 @@ class Train
 
   protected
 
+  attr_reader :station_index
+
   def have_route?
     !@route.nil?
   end
@@ -86,10 +88,10 @@ class Train
   end
   
   def last_station?
-    current_station == @route.last
+    current_station == @route.last_station
   end
 
   def first_station?
-    current_station == @route.first
+    current_station == @route.first_station
   end
 end

@@ -5,11 +5,11 @@ class Route
     @stations = [start_station, end_station]
   end
 
-  def first
+  def first_station
     @stations.first
   end
 
-  def last
+  def last_station
     @stations.last
   end
 
@@ -18,7 +18,7 @@ class Route
   end
 
   def delete_station(station)
-    return 'Endpoints error' if station == @stations.first || station == @stations.last
+    return if [first_station, last_station].include?(station)
     @stations.delete(station)
   end
 end
