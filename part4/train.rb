@@ -1,6 +1,7 @@
 class Train
   include Manufacturer
   include InstanceCounter
+  include Validator
 
   attr_reader :number, :type, :wagons, :speed, :route
 
@@ -15,6 +16,7 @@ class Train
     @type = type
     @wagons = []
     @speed = 0
+    validate!
     @@trains[@number] = self
     register_instance
   end

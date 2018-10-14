@@ -1,5 +1,8 @@
 require_relative 'railroad'
 require_relative 'interface'
+require_relative 'manufacturer'
+require_relative 'instance_counter'
+require_relative 'validator'
 require_relative 'train'
 require_relative 'passenger_train'
 require_relative 'cargo_train'

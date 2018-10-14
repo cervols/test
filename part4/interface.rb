@@ -48,9 +48,9 @@ class Interface
     puts '4 - add wagon to train'
     puts '5 - remove wagon from train'
     puts '6 - send train to next station'
-    puts '7 - send train to previous station'      
+    puts '7 - send train to previous station'
     puts '0 - return to the previous menu'
-    separator    
+    separator
   end
 
   def show_info_menu
@@ -74,13 +74,14 @@ class Interface
     pause
   end
 
-  def success
+  def success(*args)
     puts 'Operation completed successfully'
+    puts "#{args.first} #{args.last} was created." unless args.empty?
     pause
   end
 
-  def error
-    puts 'Something went wrong...'
+  def error(e)
+    puts e.message
     pause
   end
 
