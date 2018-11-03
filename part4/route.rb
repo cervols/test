@@ -26,4 +26,11 @@ class Route
     return if [first_station, last_station].include?(station)
     @stations.delete(station)
   end
+
+  private
+
+  def validate!
+    raise "Station/s is invalid" unless stations.all?{ |station| station.is_a?(Station) }
+    raise "Start and last station cannot be the same" if stations.first.name == stations.last.name
+  end
 end
