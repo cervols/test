@@ -135,6 +135,11 @@ class Railroad
     end
   end
 
+  def try_again?
+    @interface.ask_about_retry
+    user_input == '0' ? false : true
+  end
+
   def create_station
     @interface.ask_enter_station
     station = Station.new(user_input)
@@ -142,6 +147,7 @@ class Railroad
     @interface.success(station.name, 'station')
   rescue RuntimeError => e
     @interface.error(e)
+    retry if try_again?
   end
 
   def create_train
@@ -163,6 +169,7 @@ class Railroad
     @interface.success('Train', train_number)
   rescue RuntimeError => e
     @interface.error(e)
+    retry if try_again?
   end
 
   def create_wagon
@@ -184,6 +191,7 @@ class Railroad
     @interface.success('Wagon', wagon_number)
   rescue RuntimeError => e
     @interface.error(e)
+    retry if try_again?
   end
 
   def create_route
@@ -205,6 +213,7 @@ class Railroad
     @interface.success
   rescue RuntimeError => e
     @interface.error(e)
+    retry if try_again?
   end
 
   def add_station_to_route

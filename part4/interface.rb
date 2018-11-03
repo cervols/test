@@ -82,7 +82,10 @@ class Interface
 
   def error(e)
     puts e.message
-    pause
+  end
+
+  def ask_about_retry
+    puts "Press Enter to try again or enter '0' to return to menu"
   end
 
   def error_not_found(object_type, id = '')
