@@ -19,6 +19,18 @@ class Interface
     pause
   end
 
+  def show_train_info(train)
+    puts "Number: #{train.number}; type: #{train.type}; wagons number: #{train.wagons_number}"
+  end
+
+  def show_passenger_wagon_info(wagon)
+    puts "Number: #{wagon.number}; type: #{wagon.type}; available seats: #{wagon.available_seats}; occupied seats: #{wagon.occupied_seats}"
+  end
+
+  def show_cargo_wagon_info(wagon)
+    puts "Number: #{wagon.number}; type: #{wagon.type}; available volume: #{wagon.available_volume}; occupied volume: #{wagon.occupied_volume}"
+  end
+
   def show_main_menu
     puts 'What do you want to do? Please, enter your choice and press Enter:'
     puts '1 - create station, train, wagon or route'
@@ -47,8 +59,9 @@ class Interface
     puts '3 - add route to train'
     puts '4 - add wagon to train'
     puts '5 - remove wagon from train'
-    puts '6 - send train to next station'
-    puts '7 - send train to previous station'
+    puts '6 - reserve seat/volume in the wagon'
+    puts '7 - send train to next station'
+    puts '8 - send train to previous station'
     puts '0 - return to the previous menu'
     separator
   end
@@ -60,7 +73,8 @@ class Interface
     puts '2 - trains'
     puts '3 - trains on station'
     puts '4 - wagons'
-    puts '5 - routes'
+    puts '5 - wagons in train'
+    puts '6 - routes'
     puts '0 - return to the previous menu'
     separator
   end
@@ -103,6 +117,11 @@ class Interface
     pause
   end
 
+  def error_no_wagons_in_train(train_number)
+    puts "There are no wagons in train #{train_number}"
+    pause
+  end
+
   def ask_enter_station(type = '', additional = '')
     puts "Please, enter the#{type} station name#{additional}:"
   end
@@ -125,6 +144,22 @@ class Interface
 
   def ask_enter_wagon_number
     puts 'Please, enter the wagon number:'
+  end
+
+  def ask_enter_seats_number
+    puts 'Please, enter the seats number in the wagon:'
+  end
+
+  def ask_enter_volume
+    puts 'Please, enter the volume of the wagon:'
+  end
+
+  def ask_about_seat_reservation(wagon_number)
+    puts "Enter '1' and press Enter if you want to reserve a seat in the passenger wagon #{wagon_number}"
+  end
+
+  def ask_about_volume_reservation(wagon_number)
+    puts "Please, enter the volume to reserve it in the wagon №#{wagon_number}"
   end
 
   def ask_additional_question(text)

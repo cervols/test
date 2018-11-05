@@ -103,8 +103,10 @@ class Railroad
       when '5'
         change_wagons_number('remove from train')
       when '6'
-        send_train('forward')
+        reserve_place_in_wagon
       when '7'
+        send_train('forward')
+      when '8'
         send_train('back')
       else
         @interface.dont_understand(choice)
@@ -128,6 +130,8 @@ class Railroad
       when '4'
         wagons_info
       when '5'
+        wagons_in_train_info
+      when '6'
         routes_info
       else
         @interface.dont_understand(choice)
@@ -182,10 +186,12 @@ class Railroad
     @interface.ask_enter_wagon_number
     wagon_number = user_input
     if wagon_type == "1"
-      wagon = PassengerWagon.new(wagon_number)
+      @interface.ask_enter_seats_number
+      wagon = PassengerWagon.new(wagon_number, user_input.to_i)
       @wagons << wagon
-    elsif wagon_type == "2"
-      wagon = CargoWagon.new(wagon_number)
+    else
+      @interface.ask_enter_volume
+      wagon = CargoWagon.new(wagon_number, user_input.to_f)
       @wagons << wagon
     end
     @interface.success('Wagon', wagon_number)
@@ -300,6 +306,25 @@ class Railroad
     @interface.pause
   end
 
+  def reserve_place_in_wagon
+    @interface.ask_enter_wagon_number
+    wagon_number = user_input
+    wagon = find_wagon(wagon_number)
+    unless wagon
+      @interface.error_not_found('Wagon', wagon_number)
+      return
+    end
+    if wagon.is_a?(PassengerWagon)
+      @interface.ask_about_seat_reservation(wagon.number)
+      wagon.reserve_seat if user_input == '1'
+    else
+      @interface.ask_about_volume_reservation(wagon.number)
+      amount = user_input.to_f
+      wagon.reserve_volume(amount)
+    end
+    @interface.pause
+  end
+
   def send_train(direction)
     @interface.ask_enter_train_number
     train_number = user_input
@@ -341,7 +366,8 @@ class Railroad
     elsif station.trains.empty?
       @interface.error_no_trains_on_station(station_name)
     else
-      @interface.show_collection_info(station.trains)
+      station.all_trains { |train| @interface.show_train_info(train) }
+      @interface.pause
     end
   end
 
@@ -350,6 +376,22 @@ class Railroad
       @interface.error_no_objects('wagons')
     else
       @interface.show_collection_info(@wagons)
+    end
+  end
+
+  def wagons_in_train_info
+    @interface.ask_enter_train_number
+    train_number = user_input
+    train = find_train(train_number)
+    if !train
+      @interface.error_not_found('Train', train_number)
+    elsif train.wagons.empty?
+      @interface.error_no_wagons_in_train(train_number)
+    else
+      train.all_wagons do |wagon|
+        wagon.is_a?(PassengerWagon) ? @interface.show_passenger_wagon_info(wagon) : @interface.show_cargo_wagon_info(wagon)
+      end
+      @interface.pause
     end
   end
 

@@ -24,6 +24,10 @@ class Train
     register_instance
   end
 
+  def all_wagons(&block)
+    self.wagons.each { |wagon| block.call(wagon) }
+  end
+
   def increase_speed(speed)
     @speed += speed
   end

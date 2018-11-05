@@ -20,6 +20,10 @@ class Station
     register_instance
   end
 
+  def all_trains(&block)
+    self.trains.each { |train| block.call(train) }
+  end
+
   def add_train(train)
     @trains << train unless @trains.include?(train)
   end
