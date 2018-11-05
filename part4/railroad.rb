@@ -8,7 +8,7 @@ class Railroad
     @trains   = []
     @wagons   = []
   end
-  
+
   def run
     @interface.welcome
     main_menu
@@ -135,51 +135,63 @@ class Railroad
     end
   end
 
+  def try_again?
+    @interface.ask_about_retry
+    user_input == '0' ? false : true
+  end
+
   def create_station
     @interface.ask_enter_station
     station = Station.new(user_input)
-    if station
-      @stations << station
-      @interface.success
-    else
-      @interface.error
-    end
+    @stations << station
+    @interface.success(station.name, 'station')
+  rescue RuntimeError => e
+    @interface.error(e)
+    retry if try_again?
   end
 
   def create_train
     @interface.ask_enter_train_type
     train_type = user_input
+    unless train_type == "1" || train_type == "2"
+      @interface.dont_understand(train_type)
+      return
+    end
     @interface.ask_enter_train_number
     train_number = user_input
     if train_type == "1"
       train = PassengerTrain.new(train_number)
       @trains << train
-      @interface.success
     elsif train_type == "2"
       train = CargoTrain.new(train_number)
       @trains << train
-      @interface.success
-    else
-      @interface.error
     end
+    @interface.success('Train', train_number)
+  rescue RuntimeError => e
+    @interface.error(e)
+    retry if try_again?
   end
 
   def create_wagon
     @interface.ask_enter_wagon_type
     wagon_type = user_input
+    unless wagon_type == "1" || wagon_type == "2"
+      @interface.dont_understand(wagon_type)
+      return
+    end
     @interface.ask_enter_wagon_number
     wagon_number = user_input
     if wagon_type == "1"
       wagon = PassengerWagon.new(wagon_number)
       @wagons << wagon
-      @interface.success
     elsif wagon_type == "2"
       wagon = CargoWagon.new(wagon_number)
       @wagons << wagon
-      @interface.success
-    else
-      @interface.error
     end
+    @interface.success('Wagon', wagon_number)
+  rescue RuntimeError => e
+    @interface.error(e)
+    retry if try_again?
   end
 
   def create_route
@@ -197,12 +209,11 @@ class Railroad
       end_station = Station.new(end_station_name)
       @stations << end_station
     end
-    if start_station && end_station
-      @routes << Route.new(start_station, end_station)
-      @interface.success
-    else
-      @interface.error
-    end
+    @routes << Route.new(start_station, end_station)
+    @interface.success
+  rescue RuntimeError => e
+    @interface.error(e)
+    retry if try_again?
   end
 
   def add_station_to_route
@@ -285,7 +296,7 @@ class Railroad
       train.delete_wagon(wagon)
     elsif action == 'add to train'
       train.add_wagon(wagon) unless train.wagons.include?(wagon)
-    end    
+    end
     @interface.pause
   end
 

@@ -1,6 +1,10 @@
 class Train
   include Manufacturer
   include InstanceCounter
+  include Validator
+
+  TRAIN_NUMBER_FORMAT = /^[\da-z]{3}\-?[\da-z]{2}$/i
+  TRAIN_TYPE_FORMAT   = /^(cargo|passenger)$/i
 
   attr_reader :number, :type, :wagons, :speed, :route
 
@@ -15,6 +19,7 @@ class Train
     @type = type
     @wagons = []
     @speed = 0
+    validate!
     @@trains[@number] = self
     register_instance
   end
@@ -81,6 +86,13 @@ class Train
   protected
 
   attr_reader :station_index
+
+  def validate!
+    raise "Number cannot be nil" if number.nil?
+    raise "Number is too short" if number.length < 4
+    raise "Number has an invalid format" if number !~ TRAIN_NUMBER_FORMAT
+    raise "Type can only be 'cargo' or 'passenger'" if type !~ TRAIN_TYPE_FORMAT
+  end
 
   def have_route?
     !@route.nil?
