@@ -23,12 +23,8 @@ class Interface
     puts "Number: #{train.number}; type: #{train.type}; wagons number: #{train.wagons_number}"
   end
 
-  def show_passenger_wagon_info(wagon)
-    puts "Number: #{wagon.number}; type: #{wagon.type}; available seats: #{wagon.available_seats}; occupied seats: #{wagon.occupied_seats}"
-  end
-
-  def show_cargo_wagon_info(wagon)
-    puts "Number: #{wagon.number}; type: #{wagon.type}; available volume: #{wagon.available_volume}; occupied volume: #{wagon.occupied_volume}"
+  def show_wagon_info(wagon, place_type)
+    puts "Number: #{wagon.number}; type: #{wagon.type}; available #{place_type}: #{wagon.available_place}; occupied #{place_type}: #{wagon.occupied_place}"
   end
 
   def show_main_menu
@@ -159,7 +155,7 @@ class Interface
   end
 
   def ask_about_volume_reservation(wagon_number)
-    puts "Please, enter the volume to reserve it in the wagon №#{wagon_number}"
+    puts "Please, enter the volume to reserve it in the wagon #{wagon_number}"
   end
 
   def ask_additional_question(text)

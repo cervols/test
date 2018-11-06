@@ -25,7 +25,7 @@ class Train
   end
 
   def all_wagons(&block)
-    self.wagons.each { |wagon| block.call(wagon) }
+    self.wagons.each { |wagon| yield(wagon) }
   end
 
   def increase_speed(speed)

@@ -316,11 +316,11 @@ class Railroad
     end
     if wagon.is_a?(PassengerWagon)
       @interface.ask_about_seat_reservation(wagon.number)
-      wagon.reserve_seat if user_input == '1'
+      wagon.reserve_place if user_input == '1'
     else
       @interface.ask_about_volume_reservation(wagon.number)
       amount = user_input.to_f
-      wagon.reserve_volume(amount)
+      wagon.reserve_place(amount)
     end
     @interface.pause
   end
@@ -389,7 +389,7 @@ class Railroad
       @interface.error_no_wagons_in_train(train_number)
     else
       train.all_wagons do |wagon|
-        wagon.is_a?(PassengerWagon) ? @interface.show_passenger_wagon_info(wagon) : @interface.show_cargo_wagon_info(wagon)
+        wagon.is_a?(PassengerWagon) ? @interface.show_wagon_info(wagon, 'seats') : @interface.show_wagon_info(wagon, 'volume')
       end
       @interface.pause
     end
