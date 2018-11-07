@@ -20,7 +20,7 @@ class Station
     register_instance
   end
 
-  def all_trains(&block)
+  def all_trains
     self.trains.each { |train| yield(train) }
   end
 

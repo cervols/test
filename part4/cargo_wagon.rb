@@ -4,8 +4,4 @@ class CargoWagon < Wagon
   def initialize(number, volume)
     super(number, volume, 'cargo')
   end
-
-  def reserve_place(amount)
-    super(amount)
-  end
 end
