@@ -25,7 +25,7 @@ class Train
   end
 
   def all_wagons
-    self.wagons.each { |wagon| yield(wagon) }
+    wagons.each { |wagon| yield(wagon) }
   end
 
   def increase_speed(speed)
@@ -84,7 +84,7 @@ class Train
   end
 
   def info
-    "#{@number} - #{@type}, number of wagons = #{self.wagons_number}"
+    "#{@number} - #{@type}, number of wagons = #{wagons_number}"
   end
 
   protected
@@ -92,9 +92,9 @@ class Train
   attr_reader :station_index
 
   def validate!
-    raise "Number cannot be nil" if number.nil?
-    raise "Number is too short" if number.length < 4
-    raise "Number has an invalid format" if number !~ TRAIN_NUMBER_FORMAT
+    raise 'Number cannot be nil' if number.nil?
+    raise 'Number is too short' if number.length < 4
+    raise 'Number has an invalid format' if number !~ TRAIN_NUMBER_FORMAT
     raise "Type can only be 'cargo' or 'passenger'" if type !~ TRAIN_TYPE_FORMAT
   end
 

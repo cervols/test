@@ -21,7 +21,7 @@ class Railroad
   end
 
   def find_station(station_name)
-    @stations.find { |station| station.name.downcase == station_name.downcase }
+    @stations.find { |station| station.name.casecmp(station_name).zero? }
   end
 
   def find_route
@@ -32,17 +32,17 @@ class Railroad
     end_station_name = user_input
 
     @routes.find do |route|
-      route.first_station.name.downcase == start_station_name.downcase &&
-        route.last_station.name.downcase == end_station_name.downcase
+      route.first_station.name.casecmp(start_station_name).zero? &&
+        route.last_station.name.casecmp(end_station_name).zero?
     end
   end
 
   def find_train(train_number)
-    @trains.find { |train| train.number.downcase == train_number.downcase }
+    @trains.find { |train| train.number.casecmp(train_number).zero? }
   end
 
   def find_wagon(wagon_number)
-    @wagons.find { |wagon| wagon.number.downcase == wagon_number.downcase }
+    @wagons.find { |wagon| wagon.number.casecmp(wagon_number).zero? }
   end
 
   def main_menu
@@ -141,7 +141,7 @@ class Railroad
 
   def try_again?
     @interface.ask_about_retry
-    user_input == '0' ? false : true
+    user_input != '0'
   end
 
   def create_station
@@ -157,16 +157,16 @@ class Railroad
   def create_train
     @interface.ask_enter_train_type
     train_type = user_input
-    unless train_type == "1" || train_type == "2"
+    unless ['1', '2'].include?(train_type)
       @interface.dont_understand(train_type)
       return
     end
     @interface.ask_enter_train_number
     train_number = user_input
-    if train_type == "1"
+    if train_type == '1'
       train = PassengerTrain.new(train_number)
       @trains << train
-    elsif train_type == "2"
+    elsif train_type == '2'
       train = CargoTrain.new(train_number)
       @trains << train
     end
@@ -179,13 +179,13 @@ class Railroad
   def create_wagon
     @interface.ask_enter_wagon_type
     wagon_type = user_input
-    unless wagon_type == "1" || wagon_type == "2"
+    unless ['1', '2'].include?(wagon_type)
       @interface.dont_understand(wagon_type)
       return
     end
     @interface.ask_enter_wagon_number
     wagon_number = user_input
-    if wagon_type == "1"
+    if wagon_type == '1'
       @interface.ask_enter_seats_number
       wagon = PassengerWagon.new(wagon_number, user_input.to_i)
       @wagons << wagon
@@ -230,7 +230,7 @@ class Railroad
       return
     end
 
-    @interface.ask_enter_station('',' for adding to route')
+    @interface.ask_enter_station('', ' for adding to route')
     station_name = user_input
     station = find_station(station_name)
     if station
@@ -251,7 +251,7 @@ class Railroad
       return
     end
 
-    @interface.ask_enter_station('',' to remove it from the route')
+    @interface.ask_enter_station('', ' to remove it from the route')
     station_name = user_input
     station = find_station(station_name)
     if station
@@ -267,12 +267,12 @@ class Railroad
     train_number = user_input
 
     train = find_train(train_number)
-    if !train
+    unless train
       @interface.error_not_found('Train', train_number)
       return
     end
 
-    @interface.ask_additional_question('What route do you want to add to train? ')
+    @interface.ask_additional_question('What route do you want to add? ')
     route = find_route
     unless route
       @interface.error_not_found('Route')

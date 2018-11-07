@@ -2,7 +2,7 @@ class Station
   include InstanceCounter
   include Validator
 
-  STATION_NAME_FORMAT   = /^[a-z][a-z\-? ?]*[a-z]$/i
+  STATION_NAME_FORMAT = /^[a-z][a-z\-? ?]*[a-z]$/i
 
   attr_reader :name, :trains
 
@@ -21,7 +21,7 @@ class Station
   end
 
   def all_trains
-    self.trains.each { |train| yield(train) }
+    trains.each { |train| yield(train) }
   end
 
   def add_train(train)
@@ -43,8 +43,8 @@ class Station
   private
 
   def validate!
-    raise "Name cannot be blank" if name.empty?
-    raise "Name is too short" if name.length < 3
-    raise "Name is invalid" if name !~ STATION_NAME_FORMAT
+    raise 'Name cannot be blank' if name.empty?
+    raise 'Name is too short' if name.length < 3
+    raise 'Name is invalid' if name !~ STATION_NAME_FORMAT
   end
 end

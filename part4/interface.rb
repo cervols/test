@@ -1,12 +1,12 @@
 class Interface
   def welcome
     cls
-    puts "Welcome to the Railway program!"
+    puts 'Welcome to the Railway program!'
     separator
   end
 
   def goodbye
-    puts "Goodbye!"
+    puts 'Goodbye!'
   end
 
   def pause
