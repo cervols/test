@@ -20,6 +20,10 @@ class Station
     register_instance
   end
 
+  def all_trains
+    self.trains.each { |train| yield(train) }
+  end
+
   def add_train(train)
     @trains << train unless @trains.include?(train)
   end

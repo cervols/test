@@ -24,6 +24,10 @@ class Train
     register_instance
   end
 
+  def all_wagons
+    self.wagons.each { |wagon| yield(wagon) }
+  end
+
   def increase_speed(speed)
     @speed += speed
   end
