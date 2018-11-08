@@ -17,7 +17,7 @@ class Railroad
   private
 
   def user_input
-    @interface.get_answer
+    @interface.user_answer
   end
 
   def find_station(station_name)
@@ -150,36 +150,36 @@ class Railroad
     @stations << station
     @interface.success(station.name, 'station')
   rescue RuntimeError => e
-    @interface.error(e)
+    @interface.exception_message(e)
     retry if try_again?
   end
 
   def create_train
     @interface.ask_enter_train_type
     train_type = user_input
-    unless ['1', '2'].include?(train_type)
+    unless %w[1 2].include?(train_type)
       @interface.dont_understand(train_type)
       return
     end
     @interface.ask_enter_train_number
     train_number = user_input
-    if train_type == '1'
-      train = PassengerTrain.new(train_number)
-      @trains << train
-    elsif train_type == '2'
-      train = CargoTrain.new(train_number)
-      @trains << train
-    end
+    train =
+      if train_type == '1'
+        PassengerTrain.new(train_number)
+      else
+        CargoTrain.new(train_number)
+      end
+    @trains << train
     @interface.success('Train', train_number)
   rescue RuntimeError => e
-    @interface.error(e)
+    @interface.exception_message(e)
     retry if try_again?
   end
 
   def create_wagon
     @interface.ask_enter_wagon_type
     wagon_type = user_input
-    unless ['1', '2'].include?(wagon_type)
+    unless %w[1 2].include?(wagon_type)
       @interface.dont_understand(wagon_type)
       return
     end
@@ -196,7 +196,7 @@ class Railroad
     end
     @interface.success('Wagon', wagon_number)
   rescue RuntimeError => e
-    @interface.error(e)
+    @interface.exception_message(e)
     retry if try_again?
   end
 
@@ -218,7 +218,7 @@ class Railroad
     @routes << Route.new(start_station, end_station)
     @interface.success
   rescue RuntimeError => e
-    @interface.error(e)
+    @interface.exception_message(e)
     retry if try_again?
   end
 
@@ -389,7 +389,13 @@ class Railroad
       @interface.error_no_wagons_in_train(train_number)
     else
       train.all_wagons do |wagon|
-        wagon.is_a?(PassengerWagon) ? @interface.show_wagon_info(wagon, 'seats') : @interface.show_wagon_info(wagon, 'volume')
+        place_type =
+          if wagon.is_a?(PassengerWagon)
+            'seats'
+          else
+            'volume'
+          end
+        @interface.show_wagon_info(wagon, place_type)
       end
       @interface.pause
     end

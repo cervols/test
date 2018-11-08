@@ -49,22 +49,22 @@ class Train
   end
 
   def add_route(route)
-    leave_station if have_route?
+    leave_station if route?
     @route = route
     @station_index = 0
     arrive_at_station
   end
 
   def current_station
-    station(@station_index) if have_route?
+    station(@station_index) if route?
   end
 
   def next_station
-    station(@station_index + 1) if have_route? && !last_station?
+    station(@station_index + 1) if route? && !last_station?
   end
 
   def previous_station
-    station(@station_index - 1) if have_route? && !first_station?
+    station(@station_index - 1) if route? && !first_station?
   end
 
   def go_to_next_station
@@ -98,12 +98,12 @@ class Train
     raise "Type can only be 'cargo' or 'passenger'" if type !~ TRAIN_TYPE_FORMAT
   end
 
-  def have_route?
-    !@route.nil?
+  def route?
+    !!@route
   end
 
   def station(station_index)
-    @route.stations[station_index] if have_route?
+    @route.stations[station_index] if route?
   end
 
   def leave_station
