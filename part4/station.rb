@@ -6,18 +6,15 @@ class Station
 
   attr_reader :name, :trains
 
-  @@stations = []
-
-  def self.all
-    @@stations
+  class << self
+    alias find all
   end
 
   def initialize(name)
     @name = name
     @trains = []
     validate!
-    @@stations << self
-    register_instance
+    register_instance(@name)
   end
 
   def all_trains

@@ -20,8 +20,8 @@ class Railroad
     @interface.user_answer
   end
 
-  def find_station(station_name)
-    @stations.find { |station| station.name.casecmp(station_name).zero? }
+  def find_station(name)
+    Station.all[name]
   end
 
   def find_route
@@ -38,7 +38,7 @@ class Railroad
   end
 
   def find_train(train_number)
-    @trains.find { |train| train.number.casecmp(train_number).zero? }
+    PassengerTrain.all[train_number] || CargoTrain.all[train_number]
   end
 
   def find_wagon(wagon_number)
@@ -88,54 +88,60 @@ class Railroad
   def work_menu
     loop do
       @interface.show_work_menu
-      choice = user_input
-      case choice
-      when '0'
-        main_menu
-      when '1'
-        add_station_to_route
-      when '2'
-        remove_station_from_route
-      when '3'
-        add_route_to_train
-      when '4'
-        change_wagons_number('add to train')
-      when '5'
-        change_wagons_number('remove from train')
-      when '6'
-        reserve_place_in_wagon
-      when '7'
-        send_train('forward')
-      when '8'
-        send_train('back')
-      else
-        @interface.dont_understand(choice)
-      end
+      select_work_action(user_input)
+    end
+  end
+
+  def select_work_action(choice) # rubocop:disable Metrics/MethodLength
+    case choice
+    when '0'
+      main_menu
+    when '1'
+      add_station_to_route
+    when '2'
+      remove_station_from_route
+    when '3'
+      add_route_to_train
+    when '4'
+      change_wagons_number('add to train')
+    when '5'
+      change_wagons_number('remove from train')
+    when '6'
+      reserve_place_in_wagon
+    when '7'
+      send_train('forward')
+    when '8'
+      send_train('back')
+    else
+      @interface.dont_understand(choice)
     end
   end
 
   def info_menu
     loop do
       @interface.show_info_menu
-      choice = user_input
-      case choice
-      when '0'
-        main_menu
-      when '1'
-        stations_info
-      when '2'
-        trains_info
-      when '3'
-        trains_on_station_info
-      when '4'
-        wagons_info
-      when '5'
-        wagons_in_train_info
-      when '6'
-        routes_info
-      else
-        @interface.dont_understand(choice)
-      end
+      select_info_action(user_input)
+    end
+  end
+
+  def select_info_action(choice)
+    case choice
+    when '0'
+      main_menu
+    when '1'
+      stations_info
+    when '2'
+      trains_info
+    when '3'
+      trains_on_station_info
+    when '4'
+      wagons_info
+    when '5'
+      wagons_in_train_info
+    when '6'
+      routes_info
+    else
+      @interface.dont_understand(choice)
     end
   end
 
@@ -163,12 +169,7 @@ class Railroad
     end
     @interface.ask_enter_train_number
     train_number = user_input
-    train =
-      if train_type == '1'
-        PassengerTrain.new(train_number)
-      else
-        CargoTrain.new(train_number)
-      end
+    train = train_type == '1' ? PassengerTrain.new(train_number) : CargoTrain.new(train_number)
     @trains << train
     @interface.success('Train', train_number)
   rescue RuntimeError => e
@@ -185,36 +186,35 @@ class Railroad
     end
     @interface.ask_enter_wagon_number
     wagon_number = user_input
-    if wagon_type == '1'
-      @interface.ask_enter_seats_number
-      wagon = PassengerWagon.new(wagon_number, user_input.to_i)
-      @wagons << wagon
-    else
-      @interface.ask_enter_volume
-      wagon = CargoWagon.new(wagon_number, user_input.to_f)
-      @wagons << wagon
-    end
+
+    create_wagon_by_type(wagon_type, wagon_number)
+
     @interface.success('Wagon', wagon_number)
   rescue RuntimeError => e
     @interface.exception_message(e)
     retry if try_again?
   end
 
+  def create_wagon_by_type(wagon_type, wagon_number)
+    if wagon_type == '1'
+      @interface.ask_enter_seats_number
+      wagon = PassengerWagon.new(wagon_number, user_input.to_i)
+    else
+      @interface.ask_enter_volume
+      wagon = CargoWagon.new(wagon_number, user_input.to_f)
+    end
+    @wagons << wagon
+  end
+
   def create_route
     @interface.ask_enter_station(' start')
-    start_station_name = user_input
-    start_station = find_station(start_station_name)
-    unless start_station
-      start_station = Station.new(start_station_name)
-      @stations << start_station
-    end
+    station_name = user_input
+    start_station = find_station(station_name) || create_station_for_route(station_name)
+
     @interface.ask_enter_station(' end')
-    end_station_name = user_input
-    end_station = find_station(end_station_name)
-    unless end_station
-      end_station = Station.new(end_station_name)
-      @stations << end_station
-    end
+    station_name = user_input
+    end_station = find_station(station_name) || create_station_for_route(station_name)
+
     @routes << Route.new(start_station, end_station)
     @interface.success
   rescue RuntimeError => e
@@ -222,8 +222,15 @@ class Railroad
     retry if try_again?
   end
 
+  def create_station_for_route(name)
+    station = Station.new(name)
+    @stations << station
+    station
+  end
+
   def add_station_to_route
     @interface.ask_additional_question('What route do you want to update? ')
+    # route = find_route || @interface.error_not_found('Route') || return
     route = find_route
     unless route
       @interface.error_not_found('Route')
@@ -245,6 +252,7 @@ class Railroad
 
   def remove_station_from_route
     @interface.ask_additional_question('What route do you want to update? ')
+    # route = find_route || @interface.error_not_found('Route') || return
     route = find_route
     unless route
       @interface.error_not_found('Route')
@@ -291,6 +299,7 @@ class Railroad
       @interface.error_not_found('Train', train_number)
       return
     end
+
     @interface.ask_enter_wagon_number
     wagon_number = user_input
     wagon = find_wagon(wagon_number)
@@ -298,12 +307,18 @@ class Railroad
       @interface.error_not_found('Wagon', wagon_number)
       return
     end
+
+    change_wagons_number_action(action, train, wagon)
+
+    @interface.pause
+  end
+
+  def change_wagons_number_action(action, train, wagon)
     if action == 'remove from train'
       train.delete_wagon(wagon)
     elsif action == 'add to train'
       train.add_wagon(wagon) unless train.wagons.include?(wagon)
     end
-    @interface.pause
   end
 
   def reserve_place_in_wagon
@@ -314,6 +329,13 @@ class Railroad
       @interface.error_not_found('Wagon', wagon_number)
       return
     end
+
+    reserve_place_by_wagon_type(wagon)
+
+    @interface.pause
+  end
+
+  def reserve_place_by_wagon_type(wagon)
     if wagon.is_a?(PassengerWagon)
       @interface.ask_about_seat_reservation(wagon.number)
       wagon.reserve_place if user_input == '1'
@@ -322,7 +344,6 @@ class Railroad
       amount = user_input.to_f
       wagon.reserve_place(amount)
     end
-    @interface.pause
   end
 
   def send_train(direction)
@@ -333,11 +354,14 @@ class Railroad
       @interface.error_not_found('Train', train_number)
       return
     end
-    if direction == 'forward'
+
+    case direction
+    when 'forward'
       train.go_to_next_station
-    elsif direction == 'back'
+    when 'back'
       train.go_to_previous_station
     end
+
     @interface.pause
   end
 
@@ -389,12 +413,7 @@ class Railroad
       @interface.error_no_wagons_in_train(train_number)
     else
       train.all_wagons do |wagon|
-        place_type =
-          if wagon.is_a?(PassengerWagon)
-            'seats'
-          else
-            'volume'
-          end
+        place_type = wagon.is_a?(PassengerWagon) ? 'seats' : 'volume'
         @interface.show_wagon_info(wagon, place_type)
       end
       @interface.pause

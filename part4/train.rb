@@ -8,10 +8,8 @@ class Train
 
   attr_reader :number, :type, :wagons, :speed, :route
 
-  @@trains = {}
-
   def self.find(number)
-    @@trains[number]
+    @all[number]
   end
 
   def initialize(number, type)
@@ -20,8 +18,7 @@ class Train
     @wagons = []
     @speed = 0
     validate!
-    @@trains[@number] = self
-    register_instance
+    register_instance(@number)
   end
 
   def all_wagons
@@ -68,19 +65,19 @@ class Train
   end
 
   def go_to_next_station
-    if next_station
-      leave_station
-      @station_index += 1
-      arrive_at_station
-    end
+    return unless next_station
+
+    leave_station
+    @station_index += 1
+    arrive_at_station
   end
 
   def go_to_previous_station
-    if previous_station
-      leave_station
-      @station_index -= 1
-      arrive_at_station
-    end
+    return unless previous_station
+
+    leave_station
+    @station_index -= 1
+    arrive_at_station
   end
 
   def info
@@ -99,7 +96,7 @@ class Train
   end
 
   def route?
-    !!@route
+    !@route.nil?
   end
 
   def station(station_index)

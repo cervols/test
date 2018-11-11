@@ -5,13 +5,16 @@ module InstanceCounter
   end
 
   module ClassMethods
-    attr_accessor :instances
+    attr_accessor :instances, :all
   end
 
   module InstanceMethods
     protected
 
-    def register_instance
+    def register_instance(index)
+      self.class.all ||= {}
+      self.class.all[index] = self
+
       self.class.instances ||= 0
       self.class.instances += 1
     end
