@@ -230,12 +230,7 @@ class Railroad
 
   def add_station_to_route
     @interface.ask_additional_question('What route do you want to update? ')
-    # route = find_route || @interface.error_not_found('Route') || return
-    route = find_route
-    unless route
-      @interface.error_not_found('Route')
-      return
-    end
+    route = find_route || @interface.error_not_found('Route') && return
 
     @interface.ask_enter_station('', ' for adding to route')
     station_name = user_input
@@ -252,12 +247,7 @@ class Railroad
 
   def remove_station_from_route
     @interface.ask_additional_question('What route do you want to update? ')
-    # route = find_route || @interface.error_not_found('Route') || return
-    route = find_route
-    unless route
-      @interface.error_not_found('Route')
-      return
-    end
+    route = find_route || @interface.error_not_found('Route') && return
 
     @interface.ask_enter_station('', ' to remove it from the route')
     station_name = user_input
