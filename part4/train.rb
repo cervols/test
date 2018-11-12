@@ -8,10 +8,8 @@ class Train
 
   attr_reader :number, :type, :wagons, :speed, :route
 
-  @@trains = {}
-
   def self.find(number)
-    @@trains[number]
+    @all[number]
   end
 
   def initialize(number, type)
@@ -20,12 +18,11 @@ class Train
     @wagons = []
     @speed = 0
     validate!
-    @@trains[@number] = self
-    register_instance
+    register_instance(@number)
   end
 
   def all_wagons
-    self.wagons.each { |wagon| yield(wagon) }
+    wagons.each { |wagon| yield(wagon) }
   end
 
   def increase_speed(speed)
@@ -49,42 +46,42 @@ class Train
   end
 
   def add_route(route)
-    leave_station if have_route?
+    leave_station if route?
     @route = route
     @station_index = 0
     arrive_at_station
   end
 
   def current_station
-    station(@station_index) if have_route?
+    station(@station_index) if route?
   end
 
   def next_station
-    station(@station_index + 1) if have_route? && !last_station?
+    station(@station_index + 1) if route? && !last_station?
   end
 
   def previous_station
-    station(@station_index - 1) if have_route? && !first_station?
+    station(@station_index - 1) if route? && !first_station?
   end
 
   def go_to_next_station
-    if next_station
-      leave_station
-      @station_index += 1
-      arrive_at_station
-    end
+    return unless next_station
+
+    leave_station
+    @station_index += 1
+    arrive_at_station
   end
 
   def go_to_previous_station
-    if previous_station
-      leave_station
-      @station_index -= 1
-      arrive_at_station
-    end
+    return unless previous_station
+
+    leave_station
+    @station_index -= 1
+    arrive_at_station
   end
 
   def info
-    "#{@number} - #{@type}, number of wagons = #{self.wagons_number}"
+    "#{@number} - #{@type}, number of wagons = #{wagons_number}"
   end
 
   protected
@@ -92,18 +89,18 @@ class Train
   attr_reader :station_index
 
   def validate!
-    raise "Number cannot be nil" if number.nil?
-    raise "Number is too short" if number.length < 4
-    raise "Number has an invalid format" if number !~ TRAIN_NUMBER_FORMAT
+    raise 'Number cannot be nil' if number.nil?
+    raise 'Number is too short' if number.length < 4
+    raise 'Number has an invalid format' if number !~ TRAIN_NUMBER_FORMAT
     raise "Type can only be 'cargo' or 'passenger'" if type !~ TRAIN_TYPE_FORMAT
   end
 
-  def have_route?
+  def route?
     !@route.nil?
   end
 
   def station(station_index)
-    @route.stations[station_index] if have_route?
+    @route.stations[station_index] if route?
   end
 
   def leave_station

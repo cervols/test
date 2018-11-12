@@ -1,12 +1,12 @@
 class Interface
   def welcome
     cls
-    puts "Welcome to the Railway program!"
+    puts 'Welcome to the Railway program!'
     separator
   end
 
   def goodbye
-    puts "Goodbye!"
+    puts 'Goodbye!'
   end
 
   def pause
@@ -24,7 +24,10 @@ class Interface
   end
 
   def show_wagon_info(wagon, place_type)
-    puts "Number: #{wagon.number}; type: #{wagon.type}; available #{place_type}: #{wagon.available_place}; occupied #{place_type}: #{wagon.occupied_place}"
+    puts "Number: #{wagon.number}; " \
+      "type: #{wagon.type}; " \
+      "available #{place_type}: #{wagon.available_place}; " \
+      "occupied #{place_type}: #{wagon.occupied_place}"
   end
 
   def show_main_menu
@@ -75,7 +78,7 @@ class Interface
     separator
   end
 
-  def get_answer
+  def user_answer
     gets.chomp
   end
 
@@ -90,8 +93,8 @@ class Interface
     pause
   end
 
-  def error(e)
-    puts e.message
+  def exception_message(error)
+    puts error.message
   end
 
   def ask_about_retry
@@ -151,7 +154,7 @@ class Interface
   end
 
   def ask_about_seat_reservation(wagon_number)
-    puts "Enter '1' and press Enter if you want to reserve a seat in the passenger wagon #{wagon_number}"
+    puts "Enter '1' and press Enter to confirm the seat reservation in the wagon #{wagon_number}"
   end
 
   def ask_about_volume_reservation(wagon_number)
