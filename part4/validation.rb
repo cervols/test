@@ -7,19 +7,10 @@ module Validation
   module ClassMethods
     attr_reader :validations
 
-    def validate(name, validation, arg = nil)
+    def validate(name, type, arg = nil)
       @validations ||= { presence: [], format: [], type: [] }
-
-      case validation
-      when :presence
-        @validations[:presence] << { attr: name }
-      when :format
-        @validations[:format] << { attr: name, format: arg }
-      when :type
-        @validations[:type] << { attr: name, type: arg }
-      else
-        raise 'Wrong validation type'
-      end
+      raise "Wrong validation - #{type}" unless @validations.keys.include?(type)
+      @validations[type] << { attr: name, arg: arg }
     end
   end
 
@@ -35,35 +26,25 @@ module Validation
 
     def validate!
       return unless self.class.validations
-      validate_attributes_presence
-      validate_attributes_format
-      validate_attributes_type
-    end
 
-    def validate_attributes_presence
-      self.class.validations[:presence].each do |attribute|
-        attribute_name = attribute[:attr]
-        attribute_value = instance_variable_get("@#{attribute_name}")
-        raise "#{attribute_name} cannot be nil" if attribute_value.nil?
+      self.class.validations.each do |type, options|
+        options.each do |validation|
+          value = instance_variable_get("@#{validation[:attr]}")
+          send("validate_#{type}", validation[:attr], value, validation[:arg])
+        end
       end
     end
 
-    def validate_attributes_format
-      self.class.validations[:format].each do |attribute|
-        attribute_name = attribute[:attr]
-        attribute_format = attribute[:format]
-        attribute_value = instance_variable_get("@#{attribute_name}")
-        raise "#{attribute_name} has an invalid format" if attribute_value !~ attribute_format
-      end
+    def validate_presence(attribute, value, _)
+      raise "#{attribute} cannot be nil" if value.nil?
     end
 
-    def validate_attributes_type
-      self.class.validations[:type].each do |attribute|
-        attribute_name = attribute[:attr]
-        attribute_type = attribute[:type]
-        attribute_value = instance_variable_get("@#{attribute_name}")
-        raise "#{attribute_name} has an invalid class" unless attribute_value.is_a?(attribute_type)
-      end
+    def validate_format(attribute, value, format)
+      raise "#{attribute} has an invalid format" if value !~ format
+    end
+
+    def validate_type(attribute, value, klass)
+      raise "#{attribute} has an invalid class" unless value.is_a?(klass)
     end
   end
 end

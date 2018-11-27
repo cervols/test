@@ -1,11 +1,13 @@
 class Wagon
   include Manufacturer
   include Validation
+  include Accessors
 
   WAGON_NUMBER_FORMAT = /^[\da-z]{3}\-?[\da-z]{2}$/i
   WAGON_TYPE_FORMAT   = /^(cargo|passenger)$/i
 
   attr_reader :number, :type, :occupied_place
+  attr_accessor_with_history :color
 
   validate :number, :presence
   validate :number, :format, WAGON_NUMBER_FORMAT
