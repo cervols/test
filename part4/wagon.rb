@@ -1,11 +1,18 @@
 class Wagon
   include Manufacturer
-  include Validator
+  include Validation
+  include Accessors
 
   WAGON_NUMBER_FORMAT = /^[\da-z]{3}\-?[\da-z]{2}$/i
   WAGON_TYPE_FORMAT   = /^(cargo|passenger)$/i
 
   attr_reader :number, :type, :occupied_place
+  attr_accessor_with_history :color
+
+  validate :number, :presence
+  validate :number, :format, WAGON_NUMBER_FORMAT
+  validate :type, :format, WAGON_TYPE_FORMAT
+  validate :place, :type, Integer
 
   def initialize(number, place, type)
     @number = number
@@ -13,6 +20,7 @@ class Wagon
     @type = type
     @occupied_place = 0
     validate!
+    validate_place_amount!
   end
 
   def reserve_place(amount)
@@ -29,10 +37,7 @@ class Wagon
 
   protected
 
-  def validate!
-    raise 'Number cannot be nil' if number.nil?
-    raise 'Number has an invalid format' if number !~ WAGON_NUMBER_FORMAT
-    raise "Type can only be 'cargo' or 'passenger'" if type !~ WAGON_TYPE_FORMAT
+  def validate_place_amount!
     raise 'Invalid seats/volume amount' unless @place.between?(1, self.class::MAX_PLACE_AMOUNT)
   end
 end

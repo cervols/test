@@ -1,10 +1,14 @@
 class Station
   include InstanceCounter
-  include Validator
+  include Validation
 
   STATION_NAME_FORMAT = /^[a-z][a-z\-? ?]*[a-z]$/i
 
   attr_reader :name, :trains
+
+  validate :name, :presence
+  validate :name, :type, String
+  validate :name, :format, STATION_NAME_FORMAT
 
   class << self
     alias find all
@@ -35,13 +39,5 @@ class Station
 
   def info
     "#{@name}, trains on station - #{@trains.size}"
-  end
-
-  private
-
-  def validate!
-    raise 'Name cannot be blank' if name.empty?
-    raise 'Name is too short' if name.length < 3
-    raise 'Name is invalid' if name !~ STATION_NAME_FORMAT
   end
 end
